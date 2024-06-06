@@ -42,6 +42,8 @@ func EditProduct() {
 	var id int
 	fmt.Print("Enter product ID to edit: ")
 	fmt.Scan(&id)
+
+	fmt.Scanln()
 	title := utils.GetTextInput("Enter new product title: ")
 	description := utils.GetTextInput("Enter new product description: ")
 	price := utils.GetTextInput("Enter new product price: ")
@@ -75,6 +77,8 @@ func DeleteProduct() {
 	var id int
 	fmt.Print("Enter product ID to delete: ")
 	fmt.Scan(&id)
+
+	fmt.Scanln()
 
 	err := services.DeactivateProduct(id)
 	if err != nil {

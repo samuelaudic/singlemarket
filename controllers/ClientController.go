@@ -41,6 +41,8 @@ func EditClient() {
 	var id int
 	fmt.Print("Enter client ID to edit: ")
 	fmt.Scan(&id)
+	// Clear the buffer after scanning an integer
+	fmt.Scanln()
 	firstName := utils.GetTextInput("Enter new client first name: ")
 	lastName := utils.GetTextInput("Enter new client last name: ")
 	phone := utils.GetTextInput("Enter new client phone: ")

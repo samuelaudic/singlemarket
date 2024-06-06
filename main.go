@@ -8,14 +8,14 @@ import (
 )
 
 func main() {
-	// Test database connection and migration
+	// db
 	err := database.Connect()
 	if err != nil {
 		log.Fatalf("Database connection error: %v", err)
 	}
 	fmt.Println("Database connection successful and migration completed")
 
-	// Display main menu
+	// menu
 	for {
 		fmt.Println("Main Menu")
 		fmt.Println("1. Add a product")
@@ -34,6 +34,8 @@ func main() {
 
 		var choice int
 		fmt.Scan(&choice)
+
+		fmt.Scanln()
 
 		switch choice {
 		case 1:
