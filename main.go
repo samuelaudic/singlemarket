@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 	"log"
+	"singlemarket/controllers"
 	"singlemarket/database"
-	"singlemarket/handlers"
 )
 
 func main() {
@@ -37,27 +37,27 @@ func main() {
 
 		switch choice {
 		case 1:
-			handlers.AddProduct()
+			controllers.AddProduct()
 		case 2:
-			handlers.ViewAllProducts()
+			controllers.ViewAllProducts()
 		case 3:
-			handlers.EditProduct()
+			controllers.EditProduct()
 		case 4:
-			handlers.DeleteProduct()
+			controllers.DeleteProduct()
 		case 5:
-			handlers.ExportProductsToCSV()
+			controllers.ExportProductsToCSV()
 		case 6:
-			// Add a client
+			controllers.AddClient()
 		case 7:
-			// View all clients
+			controllers.ViewAllClients()
 		case 8:
-			// Edit a client
+			controllers.EditClient()
 		case 9:
-			// Export clients to CSV
+			controllers.ExportClientsToCSV()
 		case 10:
-			// Place an order
+			controllers.PlaceOrder()
 		case 11:
-			// Export orders to CSV
+			controllers.ExportOrdersToCSV()
 		case 12:
 			fmt.Println("Goodbye!")
 			return

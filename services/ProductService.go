@@ -1,7 +1,6 @@
 package services
 
 import (
-	"database/sql"
 	"encoding/csv"
 	"fmt"
 	"os"
@@ -9,14 +8,12 @@ import (
 	"singlemarket/models"
 )
 
-// AddProduct adds a new product to the database
 func AddProduct(product models.Product) error {
 	db := database.GetDB()
 	_, err := db.Exec("INSERT INTO products (title, description, price, quantity, active) VALUES (?, ?, ?, ?, ?)", product.Title, product.Description, product.Price, product.Quantity, product.Active)
 	return err
 }
 
-// GetAllProducts retrieves all products from the database
 func GetAllProducts() ([]models.Product, error) {
 	db := database.GetDB()
 	rows, err := db.Query("SELECT id, title, description, price, quantity, active FROM products")
@@ -38,21 +35,18 @@ func GetAllProducts() ([]models.Product, error) {
 	return products, nil
 }
 
-// UpdateProduct updates an existing product in the database
 func UpdateProduct(product models.Product) error {
 	db := database.GetDB()
 	_, err := db.Exec("UPDATE products SET title = ?, description = ?, price = ?, quantity = ?, active = ? WHERE id = ?", product.Title, product.Description, product.Price, product.Quantity, product.Active, product.ID)
 	return err
 }
 
-// DeactivateProduct deactivates a product by setting its active field to false
 func DeactivateProduct(id int) error {
 	db := database.GetDB()
 	_, err := db.Exec("UPDATE products SET active = ? WHERE id = ?", false, id)
 	return err
 }
 
-// ExportAllProductsToCSV exports all products to a CSV file
 func ExportAllProductsToCSV() error {
 	db := database.GetDB()
 	rows, err := db.Query("SELECT id, title, description, price, quantity, active FROM products")
@@ -61,7 +55,6 @@ func ExportAllProductsToCSV() error {
 	}
 	defer rows.Close()
 
-	// Create or open CSV file
 	csvFile, err := os.Create("../products.csv")
 	if err != nil {
 		return err
@@ -71,10 +64,8 @@ func ExportAllProductsToCSV() error {
 	writer := csv.NewWriter(csvFile)
 	defer writer.Flush()
 
-	// Write header
 	writer.Write([]string{"id", "title", "description", "price", "quantity", "active"})
 
-	// Write rows
 	for rows.Next() {
 		var product models.Product
 		err := rows.Scan(&product.ID, &product.Title, &product.Description, &product.Price, &product.Quantity, &product.Active)

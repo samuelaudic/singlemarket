@@ -1,10 +1,10 @@
 package models
 
 type Client struct {
-	id        int
-	firstname string
-	lastname  string
-	age       int
-	email     string
-	phone     string
+	ID        int
+	FirstName string
+	LastName  string
+	Phone     string
+	Address   string
+	Email     string
 }
