@@ -108,28 +108,33 @@ func ExportAllOrdersToCSV() error {
 	writer.Write([]string{"Order ID", "Client First Name", "Client Last Name", "Product Title", "Quantity", "Price", "Purchase Date"})
 
 	for rows.Next() {
-		var orderID int
-		var clientFirstName, clientLastName, productTitle string
-		var quantity int
-		var price float64
-		var purchaseDate time.Time
+    var orderID int
+    var clientFirstName, clientLastName, productTitle string
+    var quantity int
+    var price float64
+    var purchaseDateStr string
 
-		err := rows.Scan(&orderID, &clientFirstName, &clientLastName, &productTitle, &quantity, &price, &purchaseDate)
+    err := rows.Scan(&orderID, &clientFirstName, &clientLastName, &productTitle, &quantity, &price, &purchaseDateStr)
+    if err != nil {
+        return err
+    }
+
+    purchaseDate, err := time.Parse("2006-01-02 15:04:05", purchaseDateStr)
 		if err != nil {
-			return err
+				return err
 		}
 
-		record := []string{
-			fmt.Sprintf("%d", orderID),
-			clientFirstName,
-			clientLastName,
-			productTitle,
-			fmt.Sprintf("%d", quantity),
-			fmt.Sprintf("%.2f", price),
-			purchaseDate.Format(time.RFC3339),
-		}
-		writer.Write(record)
+    record := []string{
+        fmt.Sprintf("%d", orderID),
+        clientFirstName,
+        clientLastName,
+        productTitle,
+        fmt.Sprintf("%d", quantity),
+        fmt.Sprintf("%.2f", price),
+        purchaseDate.Format(time.RFC3339),
+    }
+    writer.Write(record)
 	}
-
+	
 	return nil
 }

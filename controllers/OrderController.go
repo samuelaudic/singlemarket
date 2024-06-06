@@ -15,14 +15,30 @@ func PlaceOrder() {
 	fmt.Sscanf(productID, "%d", &order.ProductID)
 	quantity := utils.GetTextInput("Enter quantity: ")
 	fmt.Sscanf(quantity, "%d", &order.Quantity)
-	price := utils.GetTextInput("Enter price: ")
-	fmt.Sscanf(price, "%f", &order.Price)
 
-	err := services.PlaceOrder(order)
+	product, err := services.GetProductByID(order.ProductID)
 	if err != nil {
-		fmt.Printf("Error placing order: %v\n", err)
+			fmt.Printf("Error getting product: %v\n", err)
+			return
+	}
+
+	order.Price = product.Price * float64(order.Quantity)
+
+	paymentInput := utils.GetTextInput("Enter payment amount: ")
+	var payment float64
+	fmt.Sscanf(paymentInput, "%f", &payment)
+
+	change := payment - order.Price
+	if change < 0 {
+			fmt.Println("Not enough payment provided.")
+			return
+	}
+
+	err = services.PlaceOrder(order)
+	if err != nil {
+			fmt.Printf("Error placing order: %v\n", err)
 	} else {
-		fmt.Println("Order placed successfully!")
+			fmt.Printf("Order placed successfully! Change: %.2f\n", change)
 	}
 }
 
