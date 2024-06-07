@@ -1,2 +1,2 @@
-/exports/csv/
-/exports/pdf/
+/exports/csv/*
+/exports/pdf/*
