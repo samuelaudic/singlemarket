@@ -7,6 +7,7 @@ import (
 	"os"
 	"singlemarket/database"
 	"singlemarket/models"
+	"singlemarket/utils"
 	"time"
 )
 
@@ -43,15 +44,15 @@ func PlaceOrder(order models.Order) error {
 		fmt.Println("envoi du mail + génération du pdf")
 		fmt.Println(emailBody)
 
-	// err = utils.SendEmail(client.Email, "Your Order Confirmation", emailBody)
-	// if err != nil {
-	// 	return err
-	// }
+	err = utils.SendEmail(client.Email, "Your Order Confirmation", emailBody)
+	if err != nil {
+		return err
+	}
 
-	// err = utils.GenerateOrderPDF(order, client, product)
-	// if err != nil {
-	// 	return err
-	// }
+	err = utils.GenerateOrderPDF(order, client, product)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }

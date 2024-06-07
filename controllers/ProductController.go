@@ -4,16 +4,17 @@ import (
 	"fmt"
 	"singlemarket/models"
 	"singlemarket/services"
-	"singlemarket/utils"
+	"singlemarket/views"
 )
 
 func AddProduct() {
+	views.GetSeparator()
 	var product models.Product
-	product.Title = utils.GetTextInput("Enter product title: ")
-	product.Description = utils.GetTextInput("Enter product description: ")
-	price := utils.GetTextInput("Enter product price: ")
+	product.Title = views.GetTextInput("Enter product title: ")
+	product.Description = views.GetTextInput("Enter product description: ")
+	price := views.GetTextInput("Enter product price: ")
 	fmt.Sscanf(price, "%f", &product.Price)
-	quantity := utils.GetTextInput("Enter product quantity: ")
+	quantity := views.GetTextInput("Enter product quantity: ")
 	fmt.Sscanf(quantity, "%d", &product.Quantity)
 	product.Active = true
 
@@ -26,6 +27,7 @@ func AddProduct() {
 }
 
 func ViewAllProducts() {
+	views.GetSeparator()
 	products, err := services.GetAllProducts()
 	if err != nil {
 		fmt.Printf("Error retrieving products: %v\n", err)
@@ -39,20 +41,21 @@ func ViewAllProducts() {
 }
 
 func EditProduct() {
+	views.GetSeparator()
 	var id int
 	fmt.Print("Enter product ID to edit: ")
 	fmt.Scan(&id)
 
 	fmt.Scanln()
-	title := utils.GetTextInput("Enter new product title: ")
-	description := utils.GetTextInput("Enter new product description: ")
-	price := utils.GetTextInput("Enter new product price: ")
+	title := views.GetTextInput("Enter new product title: ")
+	description := views.GetTextInput("Enter new product description: ")
+	price := views.GetTextInput("Enter new product price: ")
 	var priceFloat float64
 	fmt.Sscanf(price, "%f", &priceFloat)
-	quantity := utils.GetTextInput("Enter new product quantity: ")
+	quantity := views.GetTextInput("Enter new product quantity: ")
 	var quantityInt int
 	fmt.Sscanf(quantity, "%d", &quantityInt)
-	active := utils.GetTextInput("Is the product active? (true/false): ")
+	active := views.GetTextInput("Is the product active? (true/false): ")
 	var activeBool bool
 	fmt.Sscanf(active, "%t", &activeBool)
 
@@ -74,6 +77,7 @@ func EditProduct() {
 }
 
 func DeleteProduct() {
+	views.GetSeparator()
 	var id int
 	fmt.Print("Enter product ID to delete: ")
 	fmt.Scan(&id)
@@ -89,6 +93,7 @@ func DeleteProduct() {
 }
 
 func ExportProductsToCSV() {
+	views.GetSeparator()
 	err := services.ExportAllProductsToCSV()
 	if err != nil {
 		fmt.Printf("Error exporting products to CSV: %v\n", err)

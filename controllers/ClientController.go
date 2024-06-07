@@ -4,17 +4,18 @@ import (
 	"fmt"
 	"singlemarket/models"
 	"singlemarket/services"
-	"singlemarket/utils"
+	"singlemarket/views"
 )
 
 func AddClient() {
+	views.GetSeparator()
 	fmt.Println("Add a client")
 	var client models.Client
-	client.FirstName = utils.GetTextInput("First name: ")
-	client.LastName = utils.GetTextInput("Last name: ")
-	client.Phone = utils.GetTextInput("Phone: ")
-	client.Address = utils.GetTextInput("Address: ")
-	client.Email = utils.GetTextInput("Email: ")
+	client.FirstName = views.GetTextInput("First name: ")
+	client.LastName = views.GetTextInput("Last name: ")
+	client.Phone = views.GetTextInput("Phone: ")
+	client.Address = views.GetTextInput("Address: ")
+	client.Email = views.GetTextInput("Email: ")
 
 	err := services.AddClient(client)
 	if err != nil {
@@ -25,6 +26,7 @@ func AddClient() {
 }
 
 func ViewAllClients() {
+	views.GetSeparator()
 	clients, err := services.GetAllClients()
 	if err != nil {
 		fmt.Printf("Error retrieving clients: %v\n", err)
@@ -39,15 +41,16 @@ func ViewAllClients() {
 
 func EditClient() {
 	var id int
+	views.GetSeparator()
 	fmt.Print("Enter client ID to edit: ")
 	fmt.Scan(&id)
 	// Clear the buffer after scanning an integer
 	fmt.Scanln()
-	firstName := utils.GetTextInput("Enter new client first name: ")
-	lastName := utils.GetTextInput("Enter new client last name: ")
-	phone := utils.GetTextInput("Enter new client phone: ")
-	address := utils.GetTextInput("Enter new client address: ")
-	email := utils.GetTextInput("Enter new client email: ")
+	firstName := views.GetTextInput("Enter new client first name: ")
+	lastName := views.GetTextInput("Enter new client last name: ")
+	phone := views.GetTextInput("Enter new client phone: ")
+	address := views.GetTextInput("Enter new client address: ")
+	email := views.GetTextInput("Enter new client email: ")
 
 	client := models.Client{
 		ID:        id,
@@ -67,6 +70,7 @@ func EditClient() {
 }
 
 func ExportClientsToCSV() {
+	views.GetSeparator()
 	err := services.ExportAllClientsToCSV()
 	if err != nil {
 		fmt.Printf("Error exporting clients to CSV: %v\n", err)

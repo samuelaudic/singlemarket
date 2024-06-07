@@ -4,16 +4,17 @@ import (
 	"fmt"
 	"singlemarket/models"
 	"singlemarket/services"
-	"singlemarket/utils"
+	"singlemarket/views"
 )
 
 func PlaceOrder() {
+	views.GetSeparator()
 	var order models.Order
-	clientID := utils.GetTextInput("Enter client ID: ")
+	clientID := views.GetTextInput("Enter client ID: ")
 	fmt.Sscanf(clientID, "%d", &order.ClientID)
-	productID := utils.GetTextInput("Enter product ID: ")
+	productID := views.GetTextInput("Enter product ID: ")
 	fmt.Sscanf(productID, "%d", &order.ProductID)
-	quantity := utils.GetTextInput("Enter quantity: ")
+	quantity := views.GetTextInput("Enter quantity: ")
 	fmt.Sscanf(quantity, "%d", &order.Quantity)
 
 	product, err := services.GetProductByID(order.ProductID)
@@ -24,7 +25,7 @@ func PlaceOrder() {
 
 	order.Price = product.Price * float64(order.Quantity)
 
-	paymentInput := utils.GetTextInput("Enter payment amount: ")
+	paymentInput := views.GetTextInput("Enter payment amount: ")
 	var payment float64
 	fmt.Sscanf(paymentInput, "%f", &payment)
 
@@ -43,6 +44,7 @@ func PlaceOrder() {
 }
 
 func ExportOrdersToCSV() {
+	views.GetSeparator()
 	err := services.ExportAllOrdersToCSV()
 	if err != nil {
 		fmt.Printf("Error exporting orders to CSV: %v\n", err)

@@ -5,10 +5,12 @@ import (
 	"log"
 	"singlemarket/controllers"
 	"singlemarket/database"
+	"singlemarket/views"
 )
 
 func main() {
 	// db
+	views.GetSeparator()
 	err := database.Connect()
 	if err != nil {
 		log.Fatalf("Database connection error: %v", err)
@@ -17,7 +19,8 @@ func main() {
 
 	// menu
 	for {
-		fmt.Println("Main Menu")
+		views.GetSeparator()
+		fmt.Println("Main Menu\n")
 		fmt.Println("1. Add a product")
 		fmt.Println("2. View all products")
 		fmt.Println("3. Edit a product")
