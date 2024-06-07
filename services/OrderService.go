@@ -19,8 +19,28 @@ func PlaceOrder(order models.Order) error {
 	}
 	defer tx.Rollback()
 
-	_, err = tx.Exec("INSERT INTO orders (client_id, product_id, quantity, price, purchase_date) VALUES (?, ?, ?, ?, ?)",
+	result, err := tx.Exec("INSERT INTO orders (client_id, product_id, quantity, price, purchase_date) VALUES (?, ?, ?, ?, ?)",
 		order.ClientID, order.ProductID, order.Quantity, order.Price, time.Now())
+	if err != nil {
+		return err
+	}
+
+	orderID, err := result.LastInsertId()
+	if err != nil {
+		return err
+	}
+
+	order.ID = int(orderID)
+
+	// Retrieve the order to ensure all fields are populated correctly
+	var purchaseDateStr string
+	err = tx.QueryRow("SELECT purchase_date FROM orders WHERE id = ?", order.ID).Scan(&purchaseDateStr)
+	if err != nil {
+		return err
+	}
+
+	// Convert the string to time.Time
+	order.PurchaseDate, err = time.Parse("2006-01-02 15:04:05", purchaseDateStr)
 	if err != nil {
 		return err
 	}
@@ -41,18 +61,18 @@ func PlaceOrder(order models.Order) error {
 	emailBody := fmt.Sprintf("Dear %s %s,\n\nThank you for your order!\n\nProduct: %s\nQuantity: %d\nPrice: %.2f\n\nBest regards,\nSingleMarket",
 		client.FirstName, client.LastName, product.Title, order.Quantity, order.Price)
 
-		fmt.Println("envoi du mail + génération du pdf")
-		fmt.Println(emailBody)
+	fmt.Println("envoi du mail + génération du pdf")
+	fmt.Println(emailBody)
 
 	err = utils.SendEmail(client.Email, "Your Order Confirmation", emailBody)
 	if err != nil {
 		return err
 	}
 
-	// err = utils.GenerateOrderPDF(order, client, product)
-	// if err != nil {
-	// 	return err
-	// }
+	err = utils.GenerateOrderPDF(order, client, product)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
@@ -91,7 +111,20 @@ func GetProductByID(id int) (models.Product, error) {
 
 func ExportAllOrdersToCSV() error {
 	db := database.GetDB()
-	rows, err := db.Query("SELECT orders.id, clients.first_name, clients.last_name, products.title, orders.quantity, orders.price, orders.purchase_date FROM orders JOIN clients ON orders.client_id = clients.id JOIN products ON orders.product_id = products.id")
+	rows, err := db.Query(`
+		SELECT 
+			clients.id, 
+			clients.first_name, 
+			clients.last_name, 
+			GROUP_CONCAT(orders.id) AS order_ids, 
+			SUM(orders.price * orders.quantity) AS total_price
+		FROM 
+			orders 
+		JOIN 
+			clients ON orders.client_id = clients.id 
+		GROUP BY 
+			clients.id, clients.first_name, clients.last_name
+	`)
 	if err != nil {
 		return err
 	}
@@ -106,36 +139,28 @@ func ExportAllOrdersToCSV() error {
 	writer := csv.NewWriter(csvFile)
 	defer writer.Flush()
 
-	writer.Write([]string{"Order ID", "Client First Name", "Client Last Name", "Product Title", "Quantity", "Price", "Purchase Date"})
+	// Write header
+	writer.Write([]string{"Client ID", "Client First Name", "Client Last Name", "Order IDs", "Total Price"})
 
 	for rows.Next() {
-    var orderID int
-    var clientFirstName, clientLastName, productTitle string
-    var quantity int
-    var price float64
-    var purchaseDateStr string
+		var clientID int
+		var clientFirstName, clientLastName, orderIDs string
+		var totalPrice float64
 
-    err := rows.Scan(&orderID, &clientFirstName, &clientLastName, &productTitle, &quantity, &price, &purchaseDateStr)
-    if err != nil {
-        return err
-    }
-
-    purchaseDate, err := time.Parse("2006-01-02 15:04:05", purchaseDateStr)
+		err := rows.Scan(&clientID, &clientFirstName, &clientLastName, &orderIDs, &totalPrice)
 		if err != nil {
-				return err
+			return err
 		}
 
-    record := []string{
-        fmt.Sprintf("%d", orderID),
-        clientFirstName,
-        clientLastName,
-        productTitle,
-        fmt.Sprintf("%d", quantity),
-        fmt.Sprintf("%.2f", price),
-        purchaseDate.Format(time.RFC3339),
-    }
-    writer.Write(record)
+		record := []string{
+			fmt.Sprintf("%d", clientID),
+			clientFirstName,
+			clientLastName,
+			orderIDs,
+			fmt.Sprintf("%.2f", totalPrice),
+		}
+		writer.Write(record)
 	}
-	
+
 	return nil
 }
