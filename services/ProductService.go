@@ -55,7 +55,7 @@ func ExportAllProductsToCSV() error {
 	}
 	defer rows.Close()
 
-	csvFile, err := os.Create("../products.csv")
+	csvFile, err := os.Create(".exports/csv/products.csv")
 	if err != nil {
 		return err
 	}

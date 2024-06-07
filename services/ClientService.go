@@ -56,7 +56,7 @@ func ExportAllClientsToCSV() error {
 	}
 	defer rows.Close()
 
-	csvFile, err := os.Create("../clients.csv")
+	csvFile, err := os.Create("./exports/csv/clients.csv")
 	if err != nil {
 		return err
 	}

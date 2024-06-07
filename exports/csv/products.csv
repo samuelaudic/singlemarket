@@ -1,0 +1,9 @@
+id,title,description,price,quantity,active
+1,,,0.00,0,false
+2,Pomme,pomme,1.01,10,true
+3,Fraise,Une,0.00,0,true
+4,,pomme,10.00,10,false
+5,Citron,Un citron tron tron,0.90,120,true
+6,Mangue,Une mangue,1.50,200,true
+7,Melon,un melon,2.01,10,true
+8,Pastèque,une papastèque,1.50,100,true

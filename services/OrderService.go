@@ -49,10 +49,10 @@ func PlaceOrder(order models.Order) error {
 		return err
 	}
 
-	err = utils.GenerateOrderPDF(order, client, product)
-	if err != nil {
-		return err
-	}
+	// err = utils.GenerateOrderPDF(order, client, product)
+	// if err != nil {
+	// 	return err
+	// }
 
 	return nil
 }
@@ -97,7 +97,7 @@ func ExportAllOrdersToCSV() error {
 	}
 	defer rows.Close()
 
-	csvFile, err := os.Create("../orders.csv")
+	csvFile, err := os.Create("./exports/csv/orders.csv")
 	if err != nil {
 		return err
 	}
